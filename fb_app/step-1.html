@@ -1,0 +1,61 @@
+<html>
+<head>
+
+</head>
+
+<body>
+
+	<h1>Facebook Client-side Authentication Example</h1>
+      <div id="auth-status">
+
+        <div id="auth-loggedout">
+          <p>
+          	<a href="#" id="auth-loginlink">Login</a>
+          </p>
+        </div>
+
+    </div>
+
+
+ <!-- FB Code -->
+		<div id="fb-root"></div>
+	    <script>
+	      // Load the SDK Asynchronously
+	      (function(d){
+	         var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+	         if (d.getElementById(id)) {return;}
+	         js = d.createElement('script'); js.id = id; js.async = true;
+	         js.src = "//connect.facebook.net/en_US/all.js";
+	         ref.parentNode.insertBefore(js, ref);
+	       }(document));
+
+	      // Init the SDK upon load
+	      window.fbAsyncInit = function() {
+	        FB.init({
+	          appId      : '510997672272714', // App ID ("App Domains" must include "localhost")
+	          channelUrl : '//'+window.location.hostname+'/channel', // Path to your Channel File
+	          status     : true, // check login status
+	          cookie     : true, // enable cookies to allow the server to access the session
+	          xfbml      : true  // parse XFBML
+	        });
+
+	        // respond to clicks on the login and logout links
+	        document.getElementById('auth-loginlink').addEventListener('click', function(){
+
+				 FB.login(function(response) {
+				   console.log(response);
+				   if (response.authResponse) {
+				     console.log('Welcome! User logged in!');
+				   } else {
+				     console.log('User cancelled login or did not fully authorize.');
+				   }
+				 }, 
+				 {scope: 'publish_actions'});
+
+	       	 });
+	    } 
+	    </script>
+    <!-- end: FB Code -->
+
+</body>
+</html>

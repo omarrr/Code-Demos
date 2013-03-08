@@ -1,0 +1,154 @@
+<html>
+<head>
+
+	<meta property="og:title" content="Facebook Test APP"/>
+	<meta property="og:image" content="http://placehold.it/200x150/E8117F/FFFFFF&text=FB+Test+App"/>
+	<meta property="og:description" content="Description of FB Test App"/>
+
+</head>
+
+<body>
+
+	<h1>Facebook Client-side Authentication Example</h1>
+      <div id="auth-status">
+
+        <div id="auth-loggedout">
+          <p>
+          	<a href="#" id="auth-loginlink">Login</a>
+          </p>
+        </div>
+
+        <div id="auth-loggedin" style="display:none">
+          <p>Hi, <span id="auth-displayname"></span> (<a href="#" id="auth-logoutlink">logout</a>)</p>
+          <p>Possible actions:</p>
+          <ul>
+	          <li><a href="#" id="get-me">get-me</a></li>
+	          <li><a href="#" id="post-txt">post txt</a></li>
+	          <li><a href="#" id="post-link">post link</a></li>
+	          <li><a href="#" id="post-donation">post donation</a></li>
+          </ul>
+
+      </div>
+    </div>
+
+
+ <!-- FB Code -->
+		<div id="fb-root"></div>
+	    <script>
+	      // Load the SDK Asynchronously
+	      (function(d){
+	         var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+	         if (d.getElementById(id)) {return;}
+	         js = d.createElement('script'); js.id = id; js.async = true;
+	         js.src = "//connect.facebook.net/en_US/all.js";
+	         ref.parentNode.insertBefore(js, ref);
+	       }(document));
+
+	      // Init the SDK upon load
+	      window.fbAsyncInit = function() {
+	        FB.init({
+	          appId      : '510997672272714', // App ID ("App Domains" must include "localhost")
+	          channelUrl : '//'+window.location.hostname+'/channel', // Path to your Channel File
+	          status     : true, // check login status
+	          cookie     : true, // enable cookies to allow the server to access the session
+	          xfbml      : true  // parse XFBML
+	        });
+
+	        // listen for and handle auth.statusChange events
+	        FB.Event.subscribe('auth.statusChange', function(response) {
+	          if (response.authResponse) {
+	            // user has auth'd your app and is logged into Facebook
+	            FB.api('/me', function(me){
+	              if (me.name) {
+	                document.getElementById('auth-displayname').innerHTML = me.name;
+	              }
+	            })
+	            document.getElementById('auth-loggedout').style.display = 'none';
+	            document.getElementById('auth-loggedin').style.display = 'block';
+	          } else {
+	            // user has not auth'd your app, or is not logged into Facebook
+	            document.getElementById('auth-loggedout').style.display = 'block';
+	            document.getElementById('auth-loggedin').style.display = 'none';
+	          }
+	        });
+
+	        // respond to clicks on the login and logout links
+	        document.getElementById('auth-loginlink').addEventListener('click', function(){
+					//FB.login();
+
+					 FB.login(function(response) {
+					   if (response.authResponse) {
+					     console.log('Welcome!  Fetching your information.... ');
+					     FB.api('/me', function(response) {
+					       console.log('Good to see you, ' + response.name + '.');
+					     });
+					   } else {
+					     console.log('User cancelled login or did not fully authorize.');
+					   }
+					 }, 
+					 {scope: 'publish_actions'});
+
+	       	 	});
+	        document.getElementById('auth-logoutlink').addEventListener('click', function(){
+	          FB.logout();
+	        }); 
+
+	        document.getElementById('get-me').addEventListener('click', function(){
+				FB.api('/me/', 
+					function(response) {
+						console.log(response);
+					});
+	        })
+	        document.getElementById('post-txt').addEventListener('click', function(){
+				FB.api('/me/feed', 'post', 
+					{ 
+						message: '[message] Lorem ipsum dolor sit amet.'
+					}, 
+					function(response) {
+					  if (!response || response.error) {
+					    alert('Error occured');
+					  } else {
+					    alert('Post ID: ' + response.id);
+					  }
+					});
+	        })
+	        document.getElementById('post-link').addEventListener('click', function(){
+				FB.api('/me/feed', 'post', 
+					{
+						message: '[message] Lorem ipsum dolor sit amet.',
+						picture: 'http://placehold.it/300/E8117F/FFFFFF&text=[picture]',
+						link: "http://enigmatic-forest-7490.herokuapp.com/", 
+						name: "[name] FB Test APP", 
+						caption: "[caption] FB Test APP", 
+  						description: "[description] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras non sem nec nisi condimentum dictum eget et ipsum. In hac habitasse platea dictumst. Nam ut diam eu libero rhoncus tincidunt. Aliquam consectetur diam a purus condimentum posuere.", 
+						icon: 'http://placehold.it/16/E8117F/FFFFFF&text=i',
+						type: 'link',
+  
+					}, 
+					function(response) {
+					  if (!response || response.error) {
+					    alert('Error occured');
+					  } else {
+					    alert('Post ID: ' + response.id);
+					  }
+					});
+	        })
+	        document.getElementById('post-donation').addEventListener('click', function(){
+				FB.api('/me/heroku_tester:help_donate_to', 'post', 
+					{
+						charity : 'http://enigmatic-forest-7490.herokuapp.com/charity/a'
+					}, 
+					function(response) {
+					  if (!response || response.error) {
+					    alert('Error occured');
+					  } else {
+					    alert('Post ID: ' + response.id);
+					  }
+					});
+	        })	      
+	    } 
+	    </script>
+    <!-- end: FB Code -->
+
+</body>
+</html>

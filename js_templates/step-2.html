@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<script type="text/javascript" src="./js/handlebars.js"></script>
+
+	<script id="user-info-template" type="text/x-handlebars-template">
+
+		<div class="user-info-entry">
+			<h2>User data:</h2>
+			  <h3>First name: {{first_name}}</h3>
+			  <h3>Last name: {{last_name}}</h3>
+			  <h3>Age: {{age}}</h3>
+		</div>
+
+	</script>
+
+	<script type="text/javascript">
+		function load_user_info() {
+			var user_info_template_src 	= document.getElementById("user-info-template").innerHTML;
+			var user_info_template = Handlebars.compile(user_info_template_src);
+			
+			console.log(user_info_template_src);
+
+
+			var context = {first_name: "John", last_name: "Doe", age: "33"};
+			var html    = user_info_template(context);
+
+			console.log(html);
+
+			var theDiv 	= document.getElementById("user-info").innerHTML = html;
+
+		}
+	</script>
+
+</head>
+<body>
+
+
+<h1>JS Templates Demo</h1>
+
+<div id="user-info">
+	<a href="javascript:load_user_info();">load</a>
+</div>
+
+</body>
+</html>
